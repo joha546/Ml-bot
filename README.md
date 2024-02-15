@@ -22,6 +22,7 @@ Follow the steps below to set up and run the ChatBot application:
   ```
 
 - OpenAI account with API key. Get your API key from [OpenAI](https://beta.openai.com/signup/) and replace `Constants.API_KEY` in the `Constants.py` file with your key.
+- Here I haven't uploaded Constants.py due to restriction that I can public key. You can configure by your own
 
 ### Running the Application
 
