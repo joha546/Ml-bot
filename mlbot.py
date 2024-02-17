@@ -1,4 +1,3 @@
-
 import Constants
 import sys
 import openai
@@ -38,6 +37,8 @@ class MainWindow(QWidget):
         self.answer_label = QLabel("Answer: ")
         self.answer_field = QTextEdit()
         self.answer_field.setReadOnly(True)
+        self.blooms_level_label = QLabel("Bloom's Taxonomy Level: ")
+        self.blooms_level_field = QLabel("")  # To display Bloom's level
         self.submit_button = QPushButton("Submit")
         self.submit_button.setStyleSheet(
         """
@@ -55,7 +56,8 @@ class MainWindow(QWidget):
         }
         """
         )
-
+        
+        
         self.popular_questions_group = QGroupBox("Popular Questions")
         self.popular_questions_layout = QVBoxLayout()
         self.popular_questions = [
@@ -84,7 +86,11 @@ class MainWindow(QWidget):
         # Add Answer Field
         layout.addWidget(self.answer_label)
         layout.addWidget(self.answer_field)
-        
+
+        # Add Bloom's Taxonomy Level Field
+        layout.addWidget(self.blooms_level_label)
+        layout.addWidget(self.blooms_level_field)
+
         # Add the popular question Button
         for question in self.popular_questions:
             button = QPushButton(question)
@@ -136,11 +142,33 @@ class MainWindow(QWidget):
             )
             answer = completion.choices[0].message.content
             self.answer_field.setText(answer)
+
+            # Determine Bloom's Taxonomy level
+            blooms_level = determine_blooms_level(question)
+            self.blooms_level_field.setText(blooms_level)
         except Exception as e:
             print(f"Error in API call: {e}")
 
+def determine_blooms_level(question):
+    # Your logic to determine Bloom's Taxonomy level goes here
+    # For simplicity, let's assume a basic mapping for demonstration purposes
+    # You might need to implement a more sophisticated algorithm based on your requirements
 
-        
+    keywords = {
+        "remember": ["define", "recall", "list", "identify","name", "recognize", "repeat", "state","select", "describe", "locate", "match"],
+        "understand": ["explain", "interpret", "describe", "summarize","paraphrase", "illustrate", "compare", "contrast", "predict","outline", "clarify", "discuss", "estimate"],
+        "apply": ["solve", "use", "demonstrate", "apply","implement", "solve","utilize", "execute", "employ", "compute", "practice", "relate", "schedule", "show", "sketch", "modify",],
+        "analyze": ["analyze", "compare", "contrast", "diagram","break down", "examine", "investigate", "categorize", "differentiate", "deconstruct", "diagnose", "disciminate", "evaluate", "infer", "organize", "prioritize", "relate", "sepearate", "synthesize"],
+        "evaluate": ["evaluate", "assess", "critique", "justify","judge", "appraise", "argue", "defend", "discriminate", "validate", "verify", "support"],
+        "create": ["design", "create", "compose", "generate","develop", "formulate", "invent", "compose", "plan", "organize", "build", "devise", "combine", "rearrange", "adapt","assemble"]
+    }
+
+    for level, words in keywords.items():
+        if any(keyword in question.lower() for keyword in words):
+            return level.capitalize()
+
+    return "Unknown"
+
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     window = MainWindow()
